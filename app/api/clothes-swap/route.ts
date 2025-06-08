@@ -1,6 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Replicate from 'replicate';
 
+// AI模型配置
+const MODELS = {
+  IDM_VTON: {
+    id: "cuuupid/idm-vton:c871bb9b046607b680449ecbae55fd8c6d945e0a1948644bf2361b3d021d3ff4" as const,
+    name: "IDM-VTON",
+    description: "高质量虚拟试衣模型"
+  },
+  OUTFIT_ANYONE: {
+    id: "viktorfa/outfit_anyone:581ac8d6af59580a9c73dc0103b7532c8c2b06c19b422d3d5b3e2c2040a8c2c6" as const,
+    name: "Outfit Anyone", 
+    description: "通用服装试穿模型"
+  },
+  VIRTUAL_TRYON: {
+    id: "aleksa-codes/virtual-try-on:5b85cd1e00e7a1b4b2d8ad9dcbb4b893e4ba81a6b5a7373b3f46f8b26b48a5cb" as const,
+    name: "Virtual Try-On",
+    description: "快速虚拟试衣"
+  }
+} as const;
+
 // 这里是Replicate API集成示例
 // 您需要安装: npm install replicate
 // 并设置环境变量: REPLICATE_API_TOKEN
@@ -11,6 +30,7 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const personImage = formData.get('person') as File;
     const clothesImage = formData.get('clothes') as File;
+    const selectedModel = formData.get('model') as string || 'IDM_VTON';
 
     if (!personImage || !clothesImage) {
       return NextResponse.json(
@@ -55,9 +75,14 @@ export async function POST(request: NextRequest) {
           auth: process.env.REPLICATE_API_TOKEN,
         });
 
-        // 使用最新的换衣模型
+        // 根据用户选择使用不同的AI模型
+        const modelKey = selectedModel as keyof typeof MODELS;
+        const modelConfig = MODELS[modelKey] || MODELS.IDM_VTON;
+        
+        console.log(`🚀 使用 ${modelConfig.name} 模型进行换衣处理...`);
+        
         const output = await replicate.run(
-          "cuuupid/idm-vton:c871bb9b046607b680449ecbae55fd8c6d945e0a1948644bf2361b3d021d3ff4",
+          modelConfig.id,
           {
             input: {
               human_img: personBase64,
@@ -78,8 +103,8 @@ export async function POST(request: NextRequest) {
           result_url: output,
           processing_time: processingTime,
           service: 'Replicate AI',
-          model: 'cuuupid/idm-vton',
-          message: '🎉 AI换衣处理完成！使用了最新的IDM-VTON模型。'
+          model: modelConfig.name,
+          message: `🎉 AI换衣处理完成！使用了 ${modelConfig.name} 模型。`
         });
 
       } catch (replicateError) {

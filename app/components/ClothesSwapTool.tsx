@@ -19,11 +19,37 @@ interface SwapResult {
   };
 }
 
+// AI模型配置
+const MODELS = {
+  IDM_VTON: {
+    id: 'IDM_VTON',
+    name: 'IDM-VTON',
+    description: '高质量虚拟试衣模型，精确配合',
+    time: '30-60秒',
+    features: ['高质量输出', '精确配合', '自然光影']
+  },
+  OUTFIT_ANYONE: {
+    id: 'OUTFIT_ANYONE',
+    name: 'Outfit Anyone',
+    description: '通用服装试穿模型，快速处理',
+    time: '20-40秒',
+    features: ['快速处理', '多种服装', '稳定输出']
+  },
+  VIRTUAL_TRYON: {
+    id: 'VIRTUAL_TRYON',
+    name: 'Virtual Try-On',
+    description: '专业虚拟试衣解决方案，快速预览',
+    time: '15-30秒',
+    features: ['快速预览', '轻量化', '实时效果']
+  }
+};
+
 export default function ClothesSwapTool() {
   const [personImage, setPersonImage] = useState<File | null>(null);
   const [clothesImage, setClothesImage] = useState<File | null>(null);
   const [personPreview, setPersonPreview] = useState<string | null>(null);
   const [clothesPreview, setClothesPreview] = useState<string | null>(null);
+  const [selectedModel, setSelectedModel] = useState<keyof typeof MODELS>('IDM_VTON');
   const [isProcessing, setIsProcessing] = useState(false);
   const [result, setResult] = useState<SwapResult | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -83,6 +109,7 @@ export default function ClothesSwapTool() {
       const formData = new FormData();
       formData.append('person', personImage);
       formData.append('clothes', clothesImage);
+      formData.append('model', selectedModel);
 
       // 调用真实的API端点
       const response = await axios.post('/api/clothes-swap', formData, {
@@ -124,6 +151,7 @@ export default function ClothesSwapTool() {
     setClothesImage(null);
     setPersonPreview(null);
     setClothesPreview(null);
+    setSelectedModel('IDM_VTON');
     setResult(null);
     setError(null);
   };
@@ -206,15 +234,51 @@ export default function ClothesSwapTool() {
               <p className="text-gray-600 text-sm">观看AI创造您的新造型</p>
             </div>
 
+            {/* Model Selection */}
+            <div className="bg-white rounded-xl p-4 border-2 border-blue-200 mb-4">
+              <h4 className="text-sm font-semibold text-gray-900 mb-3">🤖 选择AI模型</h4>
+              <div className="space-y-2">
+                {Object.entries(MODELS).map(([key, model]) => (
+                  <label key={key} className="flex items-center cursor-pointer">
+                    <input
+                      type="radio"
+                      name="model"
+                      value={key}
+                      checked={selectedModel === key}
+                      onChange={(e) => setSelectedModel(e.target.value as keyof typeof MODELS)}
+                      className="mr-3 text-blue-500"
+                    />
+                    <div className="flex-1">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium text-gray-900">{model.name}</span>
+                        <span className="text-xs text-gray-500">{model.time}</span>
+                      </div>
+                      <p className="text-xs text-gray-600 mt-1">{model.description}</p>
+                      <div className="flex gap-1 mt-1">
+                        {model.features.map((feature, idx) => (
+                          <span key={idx} className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded">
+                            {feature}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
+
             <div className="bg-white rounded-xl p-6 border-2 border-blue-200 mb-6">
               <div className="aspect-[3/4] rounded-lg flex items-center justify-center" style={{background: 'linear-gradient(135deg, #dbeafe, #f3e8ff)'}}>
                 {isProcessing ? (
                   <div className="text-center">
                     <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-                    <p className="text-blue-600 text-sm font-medium">AI处理中...</p>
+                    <p className="text-blue-600 text-sm font-medium">使用 {MODELS[selectedModel].name} 处理中...</p>
                   </div>
                 ) : (
-                  <div className="text-blue-500 text-4xl">✨</div>
+                  <div className="text-center">
+                    <div className="text-blue-500 text-4xl mb-2">✨</div>
+                    <p className="text-xs text-gray-600">将使用 {MODELS[selectedModel].name}</p>
+                  </div>
                 )}
               </div>
             </div>
