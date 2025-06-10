@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
+import ClothesLibrary from './ClothesLibrary';
 
 interface SwapResult {
   original: string;
@@ -44,6 +45,15 @@ const MODELS = {
   }
 };
 
+// Interface for clothing items from library
+interface ClothingItem {
+  id: string;
+  name: string;
+  image: string;
+  tags: string[];
+  description: string;
+}
+
 export default function ClothesSwapTool() {
   const [personImage, setPersonImage] = useState<File | null>(null);
   const [clothesImage, setClothesImage] = useState<File | null>(null);
@@ -53,6 +63,10 @@ export default function ClothesSwapTool() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [result, setResult] = useState<SwapResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  
+  // Preset clothes library states
+  const [clothesSource, setClothesSource] = useState<'upload' | 'library'>('upload');
+  const [selectedLibraryItem, setSelectedLibraryItem] = useState<ClothingItem | null>(null);
 
   // Person image dropzone
   const onPersonDrop = useCallback((acceptedFiles: File[]) => {
@@ -73,7 +87,18 @@ export default function ClothesSwapTool() {
       const reader = new FileReader();
       reader.onload = () => setClothesPreview(reader.result as string);
       reader.readAsDataURL(file);
+      // Reset library selection when uploading
+      setSelectedLibraryItem(null);
+      setClothesSource('upload');
     }
+  }, []);
+
+  // Handle library item selection
+  const handleLibraryItemSelect = useCallback((item: ClothingItem) => {
+    setSelectedLibraryItem(item);
+    setClothesPreview(item.image);
+    setClothesImage(null); // Clear uploaded file
+    setClothesSource('library');
   }, []);
 
   const { getRootProps: getPersonRootProps, getInputProps: getPersonInputProps, isDragActive: isPersonDragActive } = useDropzone({
@@ -96,8 +121,8 @@ export default function ClothesSwapTool() {
 
   // API调用函数 - 这里使用模拟API，您可以替换为真实的AI服务
   const swapClothes = async () => {
-    if (!personImage || !clothesImage) {
-      setError('请上传人物照片和服装图片');
+    if (!personImage || (!clothesImage && !selectedLibraryItem)) {
+      setError('请上传人物照片和选择服装');
       return;
     }
 
@@ -108,8 +133,17 @@ export default function ClothesSwapTool() {
       // 模拟API调用 - 替换为真实的AI服务端点
       const formData = new FormData();
       formData.append('person', personImage);
-      formData.append('clothes', clothesImage);
+      
+      // Handle clothes source (upload or library)
+      if (clothesSource === 'library' && selectedLibraryItem) {
+        formData.append('clothes_url', selectedLibraryItem.image);
+        formData.append('clothes_id', selectedLibraryItem.id);
+      } else if (clothesImage) {
+        formData.append('clothes', clothesImage);
+      }
+      
       formData.append('model', selectedModel);
+      formData.append('clothes_source', clothesSource);
 
       // 调用真实的API端点
       const response = await axios.post('/api/clothes-swap', formData, {
@@ -154,6 +188,8 @@ export default function ClothesSwapTool() {
     setSelectedModel('IDM_VTON');
     setResult(null);
     setError(null);
+    setClothesSource('upload');
+    setSelectedLibraryItem(null);
   };
 
   return (
@@ -192,36 +228,104 @@ export default function ClothesSwapTool() {
             </div>
           </div>
 
-          {/* Step 2: Upload Clothes */}
+          {/* Step 2: Select Clothes */}
           <div className="bg-white rounded-2xl p-6 shadow-lg">
             <div className="text-center mb-6">
               <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-white font-bold">2</span>
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">选择服装</h3>
-              <p className="text-gray-600 text-sm">上传服装图片或描述想要的外观</p>
+              <p className="text-gray-600 text-sm">上传服装图片或从预设库中选择</p>
             </div>
 
-            <div 
-              {...getClothesRootProps()}
-              className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors ${
-                isClothesDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-blue-400'
-              }`}
-            >
-              <input {...getClothesInputProps()} />
-              {clothesPreview ? (
-                <div>
-                  <img src={clothesPreview} alt="Clothes" className="w-full h-40 object-cover rounded-lg mb-3" />
-                  <p className="text-green-600 font-medium text-sm">✓ 服装已选择</p>
-                </div>
-              ) : (
-                <>
-                  <div className="w-8 h-8 text-gray-400 mx-auto mb-2">👕</div>
-                  <p className="text-gray-600 text-sm font-medium">上传服装图片</p>
-                  <p className="text-gray-400 text-xs">PNG、JPG格式</p>
-                </>
-              )}
+            {/* Clothes Source Toggle */}
+            <div className="flex mb-4 bg-gray-100 rounded-lg p-1">
+              <button
+                onClick={() => setClothesSource('upload')}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                  clothesSource === 'upload'
+                    ? 'bg-white text-blue-600 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                📤 上传图片
+              </button>
+              <button
+                onClick={() => setClothesSource('library')}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                  clothesSource === 'library'
+                    ? 'bg-white text-blue-600 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                👗 预设服装库
+              </button>
             </div>
+
+            {clothesSource === 'upload' ? (
+              /* Upload Mode */
+              <div 
+                {...getClothesRootProps()}
+                className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors ${
+                  isClothesDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-blue-400'
+                }`}
+              >
+                <input {...getClothesInputProps()} />
+                {clothesPreview && clothesSource === 'upload' ? (
+                  <div>
+                    <img src={clothesPreview} alt="Clothes" className="w-full h-40 object-cover rounded-lg mb-3" />
+                    <p className="text-green-600 font-medium text-sm">✓ 服装已上传</p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="w-8 h-8 text-gray-400 mx-auto mb-2">👕</div>
+                    <p className="text-gray-600 text-sm font-medium">上传服装图片</p>
+                    <p className="text-gray-400 text-xs">PNG、JPG格式，最大10MB</p>
+                  </>
+                )}
+              </div>
+            ) : (
+              /* Library Mode */
+              <div className="max-h-80 overflow-hidden">
+                <ClothesLibrary 
+                  onSelect={handleLibraryItemSelect}
+                  selectedItem={selectedLibraryItem}
+                />
+              </div>
+            )}
+
+            {/* Current Selection Display */}
+            {clothesPreview && (
+              <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-16 rounded bg-gray-100 overflow-hidden flex-shrink-0">
+                    <img
+                      src={clothesPreview}
+                      alt="Selected clothes"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-sm font-semibold text-green-900">
+                      {clothesSource === 'library' && selectedLibraryItem 
+                        ? selectedLibraryItem.name 
+                        : '已上传的服装'}
+                    </h4>
+                    <p className="text-xs text-green-700 mt-1">
+                      {clothesSource === 'library' && selectedLibraryItem 
+                        ? selectedLibraryItem.description 
+                        : '用户上传的服装图片'}
+                    </p>
+                    <div className="flex items-center mt-2">
+                      <span className="text-xs bg-green-200 text-green-800 px-2 py-0.5 rounded mr-2">
+                        {clothesSource === 'library' ? '预设服装' : '用户上传'}
+                      </span>
+                      <span className="text-green-600 text-xs">✓</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Step 3: Process */}
@@ -285,9 +389,9 @@ export default function ClothesSwapTool() {
 
             <button 
               onClick={swapClothes}
-              disabled={!personImage || !clothesImage || isProcessing}
+              disabled={!personImage || (!clothesImage && !selectedLibraryItem) || isProcessing}
               className={`w-full py-3 px-6 rounded-xl font-semibold transition-all ${
-                (!personImage || !clothesImage || isProcessing)
+                (!personImage || (!clothesImage && !selectedLibraryItem) || isProcessing)
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   : 'btn-primary hover:scale-105'
               }`}

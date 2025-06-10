@@ -1,0 +1,195 @@
+{
+  "categories": {
+    "tops": {
+      "name": "上衣",
+      "icon": "👔",
+      "items": [
+        {
+          "id": "casual-tshirt-1",
+          "name": "休闲T恤 - 白色",
+          "image": "/clothes/tops/casual-tshirt-white.jpg",
+          "tags": ["休闲", "基础款", "白色"],
+          "description": "经典白色圆领T恤，适合日常穿搭"
+        },
+        {
+          "id": "casual-tshirt-2",
+          "name": "休闲T恤 - 黑色",
+          "image": "/clothes/tops/casual-tshirt-black.jpg",
+          "tags": ["休闲", "基础款", "黑色"],
+          "description": "百搭黑色T恤，简约时尚"
+        },
+        {
+          "id": "shirt-1",
+          "name": "正装衬衫 - 白色",
+          "image": "/clothes/tops/formal-shirt-white.jpg",
+          "tags": ["正装", "商务", "白色"],
+          "description": "经典白色商务衬衫，职场必备"
+        },
+        {
+          "id": "shirt-2",
+          "name": "休闲衬衫 - 蓝色",
+          "image": "/clothes/tops/casual-shirt-blue.jpg",
+          "tags": ["休闲", "衬衫", "蓝色"],
+          "description": "轻松休闲的蓝色衬衫"
+        },
+        {
+          "id": "hoodie-1",
+          "name": "连帽卫衣 - 灰色",
+          "image": "/clothes/tops/hoodie-grey.jpg",
+          "tags": ["休闲", "卫衣", "灰色"],
+          "description": "舒适温暖的连帽卫衣"
+        }
+      ]
+    },
+    "bottoms": {
+      "name": "下装",
+      "icon": "👖",
+      "items": [
+        {
+          "id": "jeans-1",
+          "name": "牛仔裤 - 深蓝色",
+          "image": "/clothes/bottoms/jeans-dark-blue.jpg",
+          "tags": ["牛仔", "休闲", "深蓝"],
+          "description": "经典深蓝色牛仔裤，百搭款式"
+        },
+        {
+          "id": "jeans-2",
+          "name": "牛仔裤 - 浅蓝色",
+          "image": "/clothes/bottoms/jeans-light-blue.jpg",
+          "tags": ["牛仔", "休闲", "浅蓝"],
+          "description": "清爽浅蓝色牛仔裤，夏日首选"
+        },
+        {
+          "id": "formal-pants-1",
+          "name": "正装裤 - 黑色",
+          "image": "/clothes/bottoms/formal-pants-black.jpg",
+          "tags": ["正装", "商务", "黑色"],
+          "description": "经典黑色正装裤，职业装搭配"
+        },
+        {
+          "id": "casual-pants-1",
+          "name": "休闲裤 - 卡其色",
+          "image": "/clothes/bottoms/casual-pants-khaki.jpg",
+          "tags": ["休闲", "卡其", "舒适"],
+          "description": "舒适的卡其色休闲裤"
+        },
+        {
+          "id": "shorts-1",
+          "name": "短裤 - 深蓝",
+          "image": "/clothes/bottoms/shorts-navy.jpg",
+          "tags": ["短裤", "夏季", "深蓝"],
+          "description": "夏日必备深蓝色短裤"
+        }
+      ]
+    },
+    "dresses": {
+      "name": "连衣裙",
+      "icon": "👗",
+      "items": [
+        {
+          "id": "summer-dress-1",
+          "name": "夏日连衣裙 - 花朵图案",
+          "image": "/clothes/dresses/summer-dress-floral.jpg",
+          "tags": ["夏季", "花朵", "清新"],
+          "description": "清新花朵图案连衣裙，夏日浪漫"
+        },
+        {
+          "id": "casual-dress-1",
+          "name": "休闲连衣裙 - 纯色",
+          "image": "/clothes/dresses/casual-dress-solid.jpg",
+          "tags": ["休闲", "纯色", "简约"],
+          "description": "简约纯色连衣裙，优雅大方"
+        },
+        {
+          "id": "formal-dress-1",
+          "name": "正装连衣裙 - 黑色",
+          "image": "/clothes/dresses/formal-dress-black.jpg",
+          "tags": ["正装", "黑色", "优雅"],
+          "description": "经典黑色正装连衣裙"
+        },
+        {
+          "id": "party-dress-1",
+          "name": "派对连衣裙 - 亮片",
+          "image": "/clothes/dresses/party-dress-sequin.jpg",
+          "tags": ["派对", "亮片", "闪耀"],
+          "description": "闪耀亮片派对连衣裙，聚会必备"
+        }
+      ]
+    },
+    "outerwear": {
+      "name": "外套",
+      "icon": "🧥",
+      "items": [
+        {
+          "id": "blazer-1",
+          "name": "西装外套 - 黑色",
+          "image": "/clothes/outerwear/blazer-black.jpg",
+          "tags": ["西装", "正装", "黑色"],
+          "description": "经典黑色西装外套，职业首选"
+        },
+        {
+          "id": "jacket-1",
+          "name": "休闲夹克 - 牛仔",
+          "image": "/clothes/outerwear/denim-jacket.jpg",
+          "tags": ["牛仔", "休闲", "夹克"],
+          "description": "时尚牛仔夹克，休闲百搭"
+        },
+        {
+          "id": "coat-1",
+          "name": "长款大衣 - 驼色",
+          "image": "/clothes/outerwear/coat-camel.jpg",
+          "tags": ["大衣", "长款", "驼色"],
+          "description": "优雅驼色长款大衣，秋冬温暖"
+        },
+        {
+          "id": "bomber-1",
+          "name": "飞行员夹克 - 军绿",
+          "image": "/clothes/outerwear/bomber-olive.jpg",
+          "tags": ["飞行员", "军绿", "时尚"],
+          "description": "时尚军绿色飞行员夹克"
+        }
+      ]
+    },
+    "accessories": {
+      "name": "配饰",
+      "icon": "👜",
+      "items": [
+        {
+          "id": "scarf-1",
+          "name": "丝巾 - 花纹",
+          "image": "/clothes/accessories/scarf-pattern.jpg",
+          "tags": ["丝巾", "花纹", "优雅"],
+          "description": "精美花纹丝巾，提升整体造型"
+        },
+        {
+          "id": "hat-1",
+          "name": "棒球帽 - 黑色",
+          "image": "/clothes/accessories/cap-black.jpg",
+          "tags": ["帽子", "棒球帽", "黑色"],
+          "description": "经典黑色棒球帽，休闲必备"
+        },
+        {
+          "id": "bag-1",
+          "name": "手提包 - 棕色",
+          "image": "/clothes/accessories/handbag-brown.jpg",
+          "tags": ["包包", "手提", "棕色"],
+          "description": "优雅棕色手提包，实用美观"
+        }
+      ]
+    }
+  },
+  "popular": [
+    "casual-tshirt-1",
+    "jeans-1",
+    "summer-dress-1",
+    "blazer-1",
+    "hoodie-1"
+  ],
+  "newest": [
+    "party-dress-1",
+    "bomber-1",
+    "shorts-1",
+    "scarf-1",
+    "casual-dress-1"
+  ]
+} 
