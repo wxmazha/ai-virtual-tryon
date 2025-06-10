@@ -1,22 +1,4 @@
 {
-  "version": 2,
-  "name": "ai-clothes-swapper",
-  "alias": ["ai-clothes-swapper"],
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/"
-    }
-  ],
-  "env": {
-    "REPLICATE_API_TOKEN": "@replicate-api-token"
-  },
   "functions": {
     "app/api/**/*.ts": {
       "maxDuration": 60
